@@ -2,7 +2,8 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Pizza Slice</title>
+  <title>Pizzoteria</title>
+  <link rel="shortcut icon" type="image/png" href="{{ asset('dashboard//images/logos/favicon-32x32.png') }}"/>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     
@@ -28,18 +29,25 @@
   <body>
   	<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
 	    <div class="container">
-		      <a class="navbar-brand" href="{{ route('home') }}"><span class="flaticon-pizza-1 mr-1"></span>Pizza<br><small>Delicous</small></a>
+		      <a class="navbar-brand" href="{{ route('home') }}"><span class="flaticon-pizza-1 mr-1"></span>Pizzoteria<br><span style="margin-left: 28px;"></span></a>
 		      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
 		        <span class="oi oi-menu"></span> Menu
 		      </button>
 	      <div class="collapse navbar-collapse" id="ftco-nav">
 	        <ul class="navbar-nav ml-auto">
-	          <li class="nav-item active"><a href="{{ route('home') }}" class="nav-link">Home</a></li>
-	          <li class="nav-item"><a href="{{ route('menu') }}" class="nav-link">Menu</a></li>
-	          <li class="nav-item"><a href="{{ route('services') }}" class="nav-link">Services</a></li>
-	          <li class="nav-item"><a href="{{ route('blog') }}" class="nav-link">Blog</a></li>
-	          <li class="nav-item"><a href="{{ route('about') }}" class="nav-link">About</a></li>
-	          <li class="nav-item"><a href="{{ route('contact') }}" class="nav-link">Contact</a></li>
+            <li class="nav-item {{ Request::routeIs('home') ? 'active' : '' }}"><a href="{{ route('home') }}" class="nav-link">Home</a></li>
+            <li class="nav-item {{ Request::routeIs('menu') ? 'active' : '' }}"><a href="{{ route('menu') }}" class="nav-link">Menu</a></li>
+            <li class="nav-item {{ Request::routeIs('services') ? 'active' : '' }}"><a href="{{ route('services') }}" class="nav-link">Services</a></li>
+            <li class="nav-item {{ Request::routeIs('blog') ? 'active' : '' }}"><a href="{{ route('blog') }}" class="nav-link">Blog</a></li>
+            <li class="nav-item {{ Request::routeIs('about') ? 'active' : '' }}"><a href="{{ route('about') }}" class="nav-link">About</a></li>
+            <li class="nav-item {{ Request::routeIs('contact') ? 'active' : '' }}"><a href="{{ route('contact') }}" class="nav-link">Contact</a></li>
+            <li class="nav-item">
+              @if(Auth::check())  
+                  <a href="{{ route('new') }}" class="nav-link">Dashboard</a>
+              @else  
+                  <a href="{{ route('login') }}" class="nav-link">Login</a>
+              @endif  
+            </li>
 	        </ul>
 	      </div>
 		  </div>

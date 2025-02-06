@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\bill\BillController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\dashboard\AuthenticationController;
 
 //frontend routes
 Route::get('/', function () { return view('frontend/welcome'); })->name('home');
@@ -12,4 +14,20 @@ Route::get('/contact', function () { return view('frontend.contact'); })->name('
 
 
 // backend routes 
-Route::get('/login', function () {return view('dashboard.login');})->name('login');
+Route::group(['middleware'=> 'guest'],function()
+{
+    Route::get('/login', function () {return view('dashboard.login');})->name('login');
+    Route::post('/authentication', [AuthenticationController::class, 'authentication'])->name('user.authentication');
+
+});
+
+
+Route::group(['middleware' => 'auth'], function()
+{
+    //authenticates routes
+    Route::get('/new', function () {return view('dashboard.new');})->name('new');
+    Route::get('/logout', [AuthenticationController::class, 'staff_logout'])->name('logout'); 
+    Route::get('/order', function () {return view('dashboard.orderView');})->name('order');
+    Route::post('/bill',[BillController::class,'create_order'])->name('create.order');
+    
+});

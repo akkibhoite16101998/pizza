@@ -11,7 +11,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+
+        //for staff
+        $middleware->redirectTo(
+            guests : '/login',
+            users: 'new'
+        );
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
