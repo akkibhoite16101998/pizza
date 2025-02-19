@@ -18,13 +18,13 @@ class AuthenticationController extends Controller
         $rules = [
 
             'email' => 'required|min:6,email',
-            'password' => 'required|max:5'
+            'password' => 'required|min:5'
         ];
 
         $validator = validator::make($request->all(),$rules);        
         
         if($validator->fails())
-        { echo "inn";die();
+        { //echo "inn";die();
             return redirect()->route('login')->withInput()->withErrors($validator);
 
         }else{ 

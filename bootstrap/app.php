@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\AdminAuthenticate;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -17,6 +18,11 @@ return Application::configure(basePath: dirname(__DIR__))
             guests : '/login',
             users: 'new'
         );
+
+        $middleware->alias([
+
+            'admin.access' => \App\Http\Middleware\AdminAuthenticate::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

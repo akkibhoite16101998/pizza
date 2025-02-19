@@ -46,45 +46,53 @@
   <div class="container mt-5">
     <h1 class="text-center mb-4">Pizza Menu</h1>
     <div class="row">
-      <!-- Pizza List -->
       <div class="col-md-6 col-12 mb-4">
         <div class="card shadow-sm">
           <div class="card-body">
             <h3 class="card-title">Available Pizzas</h3>
             <div id="pizzaList" class="list-group">
-              <div class="list-group-item d-flex align-items-center pizza-card" data-pizza="Margherita Extra Cheese" data-price="100">
-                <img src="{{ asset('frontend/images/pizza-1.jpg') }}" alt="Margherita Extra Cheese" class="pizza-image me-3">
-                <span>Margherita Extra Cheese</span>
-                <span class="ms-auto text-dark">₹100</span>
+              @foreach($data as $menu)
+              <div class="list-group-item d-flex align-items-center pizza-card" 
+                   data-id="{{ $menu->id }}" 
+                   data-pizza="{{ $menu->name }}" 
+                   data-price="{{ $menu->price }}">
+                   @php
+                    $imagePath = public_path('dashboard/images/menu-img/' . $menu->image);
+                  @endphp
+                <img src="{{ !empty($menu->image) && file_exists($imagePath) ? asset('dashboard/images/menu-img/' . $menu->image) : asset('frontend/images/pizza-1.jpg') }}" alt="{{ $menu->name }}" class="pizza-image me-3">
+                <span><b>{{ $menu->name }}</b></span>
+                <span class="ms-auto text-dark">{{ $menu->price }} </span>
               </div>
-              <div class="list-group-item d-flex align-items-center pizza-card" data-pizza="Pepperoni Special" data-price="150">
-                <img src="{{ asset('frontend/images/pizza-2.jpg') }}" alt="Pepperoni Special" class="pizza-image me-3">
-                <span>Pepperoni Special</span>
-                <span class="ms-auto text-dark">₹150</span>
-              </div>
-              <div class="list-group-item d-flex align-items-center pizza-card" data-pizza="Veggie Supreme Delight" data-price="120">
-                <img src="{{ asset('frontend/images/pizza-3.jpg') }}" alt="Veggie Supreme Delight" class="pizza-image me-3">
-                <span>Veggie Supreme Delight</span>
-                <span class="ms-auto text-dark">₹120</span>
-              </div>
-              <div class="list-group-item d-flex align-items-center pizza-card" data-pizza="Cheese Burst Deluxe" data-price="180">
-                <img src="{{ asset('frontend/images/pizza-4.jpg') }}" alt="Cheese Burst Deluxe" class="pizza-image me-3">
-                <span>Cheese Burst Deluxe</span>
-                <span class="ms-auto text-dark">₹180</span>
-              </div>
+              @endforeach
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Cart -->
       <div class="col-md-6 col-12 mb-4">
         <div class="card shadow-sm">
           <div class="card-body">
             <h3 class="card-title">Cart</h3>
             <form id="cartForm" method="POST" action="{{ route('create.order') }}">
               @csrf
+              
+              <!-- Phone Number & Payment Mode in One Row -->
+              <div class="row mb-3">
+                <div class="col-7">
+                  <label for="phone">Phone Number:</label>
+                  <input type="tel" id="phone" name="phone" class="form-control"  placeholder="Enter phone number" maxlength="10" pattern="\d{10}">
+                </div>
+                <div class="col-5">
+                  <label for="payMode">Payment Mode:</label>
+                  <select id="payMode" name="payMode" class="form-control" required>
+                    <option value="online">Online Payment</option>
+                    <option value="cash">Cash</option>
+                  </select>
+                </div>
+              </div>
+
               <ul id="cart" class="list-group mb-3"></ul>
+              
               <div class="d-flex justify-content-between align-items-center">
                 <span class="grand-total">Grand Total: ₹</span>
                 <input type="text" id="grandTotalDisplay" class="form-control d-inline-block" style="width: 100px;" value="0" readonly>
@@ -114,14 +122,16 @@
       const card = event.target.closest('.pizza-card');
       if (!card) return;
 
+      const pizzaId = card.getAttribute('data-id'); 
       const pizzaName = card.getAttribute('data-pizza');
       const pizzaPrice = parseInt(card.getAttribute('data-price'));
 
-      if (!cartData[pizzaName]) {
-        cartData[pizzaName] = { count: 1, price: pizzaPrice };
+      if (!cartData[pizzaId]) {
+        cartData[pizzaId] = { id: pizzaId, name: pizzaName, count: 1, price: pizzaPrice };
+
         const listItem = document.createElement('li');
         listItem.className = 'list-group-item cart-item';
-        listItem.setAttribute('data-pizza', pizzaName);
+        listItem.setAttribute('data-id', pizzaId);
         listItem.innerHTML = `
           <span class="pizza-name">${pizzaName}</span>
           <div class="btn-group">
@@ -134,8 +144,8 @@
         `;
         cart.appendChild(listItem);
       } else {
-        cartData[pizzaName].count++;
-        updateCartItem(pizzaName);
+        cartData[pizzaId].count++;
+        updateCartItem(pizzaId);
       }
       updateGrandTotal();
       updateHiddenInputs();
@@ -145,51 +155,37 @@
       const listItem = event.target.closest('.list-group-item');
       if (!listItem) return;
 
-      const pizzaName = listItem.getAttribute('data-pizza');
+      const pizzaId = listItem.getAttribute('data-id');
       if (event.target.classList.contains('increase-btn')) {
-        cartData[pizzaName].count++;
-      } else if (event.target.classList.contains('decrease-btn') && cartData[pizzaName].count > 1) {
-        cartData[pizzaName].count--;
+        cartData[pizzaId].count++;
+      } else if (event.target.classList.contains('decrease-btn') && cartData[pizzaId].count > 1) {
+        cartData[pizzaId].count--;
       } else if (event.target.classList.contains('remove-btn')) {
-        delete cartData[pizzaName];
+        delete cartData[pizzaId];
         listItem.remove();
       }
 
-      if (cartData[pizzaName]) updateCartItem(pizzaName);
+      if (cartData[pizzaId]) updateCartItem(pizzaId);
       updateGrandTotal();
       updateHiddenInputs();
     });
 
     function updateHiddenInputs() {
       hiddenInputs.innerHTML = '';
-      Object.keys(cartData).forEach((pizzaName) => {
-        const inputName = document.createElement('input');
-        inputName.type = 'hidden';
-        inputName.name = `cart[${pizzaName}][name]`;
-        inputName.value = pizzaName;
-
-        const inputCount = document.createElement('input');
-        inputCount.type = 'hidden';
-        inputCount.name = `cart[${pizzaName}][count]`;
-        inputCount.value = cartData[pizzaName].count;
-
-        const inputPrice = document.createElement('input');
-        inputPrice.type = 'hidden';
-        inputPrice.name = `cart[${pizzaName}][price]`;
-        inputPrice.value = cartData[pizzaName].price;
-
-        hiddenInputs.appendChild(inputName);
-        hiddenInputs.appendChild(inputCount);
-        hiddenInputs.appendChild(inputPrice);
+      Object.values(cartData).forEach(({ id, name, count, price }) => {
+        hiddenInputs.innerHTML += `
+          <input type="hidden" name="cart[${id}][id]" value="${id}">
+          <input type="hidden" name="cart[${id}][name]" value="${name}">
+          <input type="hidden" name="cart[${id}][count]" value="${count}">
+          <input type="hidden" name="cart[${id}][price]" value="${price}">
+        `;
       });
     }
 
-    function updateCartItem(pizzaName) {
-      const listItem = cart.querySelector(`[data-pizza="${pizzaName}"]`);
-      const countBadge = listItem.querySelector('.badge');
-      const itemTotalElement = listItem.querySelector('.item-total');
-      countBadge.textContent = cartData[pizzaName].count;
-      itemTotalElement.textContent = cartData[pizzaName].count * cartData[pizzaName].price;
+    function updateCartItem(pizzaId) {
+      const listItem = cart.querySelector(`[data-id="${pizzaId}"]`);
+      listItem.querySelector('.badge').textContent = cartData[pizzaId].count;
+      listItem.querySelector('.item-total').textContent = cartData[pizzaId].count * cartData[pizzaId].price;
     }
 
     function updateGrandTotal() {
@@ -197,19 +193,5 @@
       grandTotalDisplay.value = grandTotal;
       grandTotalHidden.value = grandTotal;
     }
-
-    document.getElementById('cancelOrder').addEventListener('click', () => {
-      alert('Order canceled!');
-      clearCart();
-    });
-
-    function clearCart() {
-      cart.innerHTML = '';
-      Object.keys(cartData).forEach((key) => delete cartData[key]);
-      updateGrandTotal();
-      updateHiddenInputs();
-    }
   </script>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 @endsection

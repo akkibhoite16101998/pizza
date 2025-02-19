@@ -27,7 +27,21 @@ Route::group(['middleware' => 'auth'], function()
     //authenticates routes
     Route::get('/new', function () {return view('dashboard.new');})->name('new');
     Route::get('/logout', [AuthenticationController::class, 'staff_logout'])->name('logout'); 
-    Route::get('/order', function () {return view('dashboard.orderView');})->name('order');
+    Route::get('/order',[BillController::class,'orderView'])->name('order');
     Route::post('/bill',[BillController::class,'create_order'])->name('create.order');
+    Route::get('/orderlist',[BillController::class,'orderlist'])->name('orderlist');
+
+    Route::get('bill_details',[BillController::class,'bill_details'])->name('customer.viewBill');
+
     
 });
+
+#write here only admin access Routes
+Route::group(['middleware' => 'admin.access'], function(){
+
+    Route::get('/menu_list', [BillController::class,'menulist'])->name('menulist');
+    Route::get('/menu_add', function () {return view('dashboard.menu_add');})->name('menu_add');
+    Route::Post('/menu_store',[BillController::class,'menu_store'])->name('menu_store');
+
+});
+

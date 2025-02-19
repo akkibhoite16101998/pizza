@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Pizza365</title>
+  <title>Pizzoteria</title>
   <link rel="shortcut icon" type="image/png" href="{{ asset('dashboard//images/logos/favicon-32x32.png') }}" />
   <link rel="stylesheet" href="{{ asset('dashboard/css/styles.min.css') }}" />
 </head>
@@ -33,9 +33,9 @@
           <div class="col-md-8 col-lg-6 col-xxl-3">
             <div class="card mb-0">
                 <a href="./index.html" class="text-nowrap logo-img text-center d-block py-1 w-100">
-                  <img src="{{ asset('dashboard/images/logos/pizza365.jpg') }}" width="120" style="border-radius: 50%;margin-top:10px;" alt="">
+                  <img src="{{ asset('dashboard/images/logos/logo.png') }}" width="120" style="border-radius: 50%;margin-top:10px;" alt="">
                 </a>
-                <p class="text-center">Where Every Slice is a Pure Veg Delight! 🍕🌿</p>
+                <p class="text-center">Where Every Bite Melts In Pure Flavour 🍕🌿</p>
               <div class="card-body">
                 
                 <form id="userForm" action="{{ route('user.authentication') }}" method="POST" enctype="multipart/form-data">

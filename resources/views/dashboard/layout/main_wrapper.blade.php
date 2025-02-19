@@ -5,9 +5,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pizzoteria</title>
-  <link rel="shortcut icon" type="image/png" href="{{ asset('dashboard//images/logos/favicon-32x32.png') }}"/>
+  <link rel="shortcut icon" type="image/png" href="{{ asset('dashboard/images/logos/favicon-32x32.png') }}"/>
   <link href="{{ asset('dashboard/css/styles.min.css') }}" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha384-HmLO8g0JWBXaNseBhITelYRhZcZ1cUsKdPn/0sA9Z5jphvIgF0JOhWgJzW8B5J8T" crossorigin="anonymous">
+  <!-- Font Awesome 6 CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
 </head>
 <body>
   <!--  Body Wrapper -->
@@ -19,7 +22,7 @@
       <div>
         <div class="brand-logo d-flex align-items-center justify-content-between">
          <a href="{{-- {{ route('account.dashboard') }} --}}" class="text-nowrap logo-img"> 
-            <img src="{{ asset('dashboard/images/logos/logo.png') }}"  width="80" alt="" style="margin-top:10px;width: 100px;height: 100;border-radius: 50%;object-fit: cover; overflow: hidden;" />
+            <img src="{{ asset('dashboard/images/logos/logo.png') }}"  width="80" alt="" style="margin-top:10px;width: 100px;height: 100px;border-radius: 50%;object-fit: cover; overflow: hidden;" />
           </a>
           <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
             <i class="ti ti-x fs-8"></i>
@@ -51,13 +54,9 @@
             </li>
             @if(Auth::user()->role === 'admin')
             <li class="sidebar-item">
-            <a class="sidebar-link" href="{{-- {{ route('users.userslist') }} --}}" aria-expanded="false"><span><i class="ti ti-article"></i></span>
-                <span class="hide-menu">Users List</span>
+            <a class="sidebar-link" href="{{ route('menulist') }}" aria-expanded="false"><span><i class="ti ti-article"></i></span>
+                <span class="hide-menu">Menu List</span>
               </a>
-            </li>
-
-            <li class="sidebar-item">
-             <a class="sidebar-link" href="{{-- {{ route('customer.customerlist') }} --}}" aria-expanded="false"><span><i class="ti ti-article"></i></span><span class="hide-menu">Customers List</span></a>
             </li>
             @endif
             
@@ -68,8 +67,8 @@
             </li>
 
             <li class="sidebar-item">
-            <a class="sidebar-link" href="{{-- {{ route('account.productlist') }} --}}" aria-expanded="false"><span><i class="ti ti-article"></i></span>
-                <span class="hide-menu">Products List</span>
+            <a class="sidebar-link" href="{{ route('orderlist') }}" aria-expanded="false"><span><i class="ti ti-article"></i></span>
+                <span class="hide-menu">Order List</span>
               </a>
             </li>
 
@@ -94,8 +93,8 @@
 
     <!--  Main wrapper -->
     <div class="body-wrapper">
-       <!--  Header Start -->
-       <header class="app-header">
+      <!--  Header Start -- >
+      <header class="app-header">
         <nav class="navbar navbar-expand-lg navbar-light">
           <ul class="navbar-nav">
             <li class="nav-item d-block d-xl-none">
@@ -131,7 +130,7 @@
                       <i class="ti ti-list-check fs-6"></i>
                       <p class="mb-0 fs-3">My Task</p>
                     </a>
-                    <a href=" {{ route('logout') }} " class="btn btn-outline-primary mx-3 mt-2 d-block">Logout bb</a> 
+                    <a href=" {{ route('logout') }} " class="btn btn-outline-primary mx-3 mt-2 d-block">Logout </a> 
                   </div>
                 </div>
               </li>
@@ -139,24 +138,25 @@
           </div>
         </nav>
       </header>
-      <!--  Header End -->
+      <! --  Header End -->
       @if (Session::has('success'))
-    <div class="col-md-12 mt-4">
-        <div class="alert alert-success">
-        {{ Session::get('success')}}
+        <div class="col-md-12 mt-4">
+            <div class="alert alert-success alert-dismissible fade show" id="success-alert">
+                {{ Session::get('success') }}
+            </div>
         </div>
-    </div>
-    @endif
-    @if (Session::has('error'))
-    <div class="col-md-12 mt-4">
-        <div class="alert alert-danger">
-        {{ Session::get('error')}}
+      @endif
+
+      @if (Session::has('error'))
+        <div class="col-md-12 mt-4">
+            <div class="alert alert-danger alert-dismissible fade show" id="error-alert">
+                {{ Session::get('error') }}
+            </div>
         </div>
-    </div>
-    @endif
+      @endif
     
     @yield('main')
-    </div>
+  </div>
   <script src="{{ asset('dashboard/libs/jquery/dist/jquery.min.js') }}"  ></script>
   <script src="{{ asset('dashboard/libs/bootstrap/dist/js/bootstrap.bundle.min.js') }}"  ></script>
   <script src="{{ asset('dashboard/js/sidebarmenu.js') }}"  ></script>
@@ -164,5 +164,12 @@
   <script src="{{ asset('dashboard/libs/apexcharts/dist/apexcharts.min.js') }}"  ></script>
   <script src="{{ asset('dashboard/libs/simplebar/dist/simplebar.js') }}" ></script>
   <script src="{{ asset('dashboard/js/dashboard.js') }}" ></script>
+  <script>
+    // Hide alerts after 5 seconds (5000ms)
+    setTimeout(function () {
+        document.getElementById('success-alert')?.remove();
+        document.getElementById('error-alert')?.remove();
+    }, 10000);
+</script>
 </body>
 </html>
