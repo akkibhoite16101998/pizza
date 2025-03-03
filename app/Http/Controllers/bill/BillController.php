@@ -196,7 +196,7 @@ class BillController extends Controller
         #echo "inn";die();
         $login_user = Auth::user()->role;
         $loginId = Auth::user()->id;
-        $current_date = "2025-02-12";
+        $current_date = date('Y-m-d');
         $start_date = $req->input('start_date',$current_date);
         $end_date =   $req->input('end_date',$current_date);
         $userId =   $req->input('user_id',$loginId);
@@ -231,9 +231,24 @@ class BillController extends Controller
 
     } 
 
-    public function bill_details(){
+    public function bill_details($action,$id){
 
-        echo "inn";
+        #echo $id;
+        if($action !="" && is_numeric($id)){
+
+            $orderDetails = Order::with(['Order_items:id as item_id,order_id,menu_id,price,quantity,total'])->find($id);
+            #dd($orderDetails->toArray());
+
+            if(!$orderDetails){
+
+                return redirect()->route('orderlist')->with('error', 'Invailed Data !');
+            }
+
+        }else{
+
+            return redirect()->route('orderlist')->with('error', 'Invailed Data !');
+        }
+
     }
     
 }

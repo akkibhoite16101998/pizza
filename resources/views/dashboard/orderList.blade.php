@@ -4,7 +4,7 @@
 <div class="container mt-4">
     <div class="row mb-10">
         <div class="col-md-2">
-            <h2 class="mb-4">Menu List</h2>
+            <h2 class="mb-4">Order List</h2>
         </div>
         <div class="col-md-8">
             <form method="get" action="{{ route('orderlist') }}" class="d-flex flex-wrap gap-2">
