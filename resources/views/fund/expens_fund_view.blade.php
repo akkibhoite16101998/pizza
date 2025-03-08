@@ -4,7 +4,19 @@
     <div class="container-fluid">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title fw-semibold mb-4">Expens Business Fund</h5>
+
+                <div class="row"> 
+
+                <div class="mb-3 col-9">
+                    <h5 class="card-title fw-semibold mb-4">Expens Business Fund</h5>
+                </div>
+                <div class="mb-3 col-3">
+                    <a class="btn btn-dark" href="{{ route('expens_fund_list') }}" aria-expanded="false">
+                        <span><i class="fa fa-list-ul"></i></span>
+                        <span class="hide-menu">Expens List</span>
+                    </a>
+                </div>
+                </div>
                 <div class="card">
                     <div class="card-body">
                         <form action="{{ route('store_expens_fund') }}" method="POST" enctype="multipart/form-data">

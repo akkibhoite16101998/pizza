@@ -100,6 +100,7 @@ class FundController extends Controller
 
         $ex_fund = new Fund_expenses();
         $ex_fund->u_id = $req->admin_user;
+        $ex_fund->item_name = $req->expens_item;
         $ex_fund->amount = $req->amount;
         $ex_fund->mode = $req->pay_mode;
         $ex_fund->reason = $req->reason;
@@ -107,7 +108,7 @@ class FundController extends Controller
 
         if ($req->hasFile('payment_image')) {
 
-            $image = $req->file('payment_image'); 
+            $image = $req->file('payment_image');  
             $ext = $image->getClientOriginalExtension(); 
             $image_name = 'fund_' . time() . '.' . $ext;
             $image->move(public_path('dashboard/images/fund-img'), $image_name);
@@ -116,6 +117,21 @@ class FundController extends Controller
         
         $ex_fund->save();
         return redirect()->route('expens_fund_view')->with('success','Expens Amount Added Successfully ');
+
+    }
+
+    public function  expens_fund_list(){
+
+        $expense_list = DB::table('fund_expenses')
+            ->select('fund_expenses.*', 'users.name')
+            ->join('users', 'fund_expenses.u_id', '=', 'users.id')
+            ->orderBy('fund_expenses.id', 'desc')
+            ->paginate(10);
+
+        #echo "<pre>";print_r($expense_list);die();
+
+
+        return view('fund/expens_fund_list',['list'=>$expense_list]);
 
     }
 }
